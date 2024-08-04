@@ -27,14 +27,14 @@ const App = () => {
     setNotification({ message, type: 'error' });
     setTimeout(() => {
       setNotification(null);
-    }, 2500);
+    }, 4000);
   };
 
   const showSuccessMessage = (message) => {
     setNotification({ message, type: 'success' });
     setTimeout(() => {
       setNotification(null);
-    }, 2500);
+    }, 4000);
   };
 
   const handleSubmit = (e) => {
@@ -46,8 +46,8 @@ const App = () => {
         setPersons(updatePersons(persons, newPerson));
         showSuccessMessage(`${payload.name} added successfully!`);
       })
-      .catch(() => {
-        showErrorMessage("Can't perform this action!");
+      .catch(({ message }) => {
+        showErrorMessage(message);
       });
     setNewName('');
     setNewNumber('');
@@ -61,14 +61,17 @@ const App = () => {
           setPersons((prev) => prev.filter((person) => person.id !== id));
           showSuccessMessage('Person removed successfully!');
         })
-        .catch(() => {
-          showErrorMessage(`Can't remove person with id: ${id}`);
+        .catch(({ message }) => {
+          showErrorMessage(message);
         });
     }
   };
 
   useEffect(() => {
-    personService.getAll().then((persons) => setPersons(persons));
+    personService
+      .getAll()
+      .then((persons) => setPersons(persons))
+      .catch(({ message }) => showErrorMessage(message));
   }, []);
 
   return (
